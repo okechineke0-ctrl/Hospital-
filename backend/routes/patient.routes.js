@@ -6,8 +6,8 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 // Mock patient database
 const patients = [];
 
-// Get all patients (Admin only)
-router.get('/', authMiddleware, roleMiddleware('admin', 'doctor', 'nurse'), (req, res) => {
+// Get all patients
+router.get('/', authMiddleware, (req, res) => {
   try {
     res.json({
       message: 'Patients retrieved successfully',
@@ -33,9 +33,9 @@ router.get('/:id', authMiddleware, (req, res) => {
 });
 
 // Create new patient
-router.post('/', authMiddleware, roleMiddleware('admin', 'receptionist'), (req, res) => {
+router.post('/', authMiddleware, roleMiddleware('admin', 'patient'), (req, res) => {
   try {
-    const { userId, dateOfBirth, gender, bloodType, address, emergencyContact } = req.body;
+    const { userId, dateOfBirth, gender, bloodType, address } = req.body;
 
     const patient = {
       id: Date.now().toString(),
@@ -44,9 +44,6 @@ router.post('/', authMiddleware, roleMiddleware('admin', 'receptionist'), (req, 
       gender,
       bloodType,
       address,
-      emergencyContact,
-      medicalHistory: [],
-      appointments: [],
       createdAt: new Date()
     };
 
@@ -62,7 +59,7 @@ router.post('/', authMiddleware, roleMiddleware('admin', 'receptionist'), (req, 
 });
 
 // Update patient
-router.put('/:id', authMiddleware, roleMiddleware('admin', 'receptionist'), (req, res) => {
+router.put('/:id', authMiddleware, roleMiddleware('admin', 'patient'), (req, res) => {
   try {
     const patient = patients.find(p => p.id === req.params.id);
     if (!patient) {
